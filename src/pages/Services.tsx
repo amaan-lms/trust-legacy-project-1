@@ -56,7 +56,7 @@ const services = [
   {
     icon: Building2,
     title: "Multi-Residential Property Acquisition & Leasing",
-    description: "We acquire and manage multi-residential buildings, providing quality housing while generating consistent returns. Our management approach prioritizes tenant satisfaction and property value preservation.",
+    description: "We acquire and manage our own rental buildings, providing quality housing while generating consistent returns. Our management approach prioritizes tenant satisfaction and property value preservation.",
     features: [
       "Apartment complex acquisition",
       "Value enhancement programs",

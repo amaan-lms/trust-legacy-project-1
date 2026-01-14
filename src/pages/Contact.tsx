@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from "react";
 import { motion } from "framer-motion";
 import Navbar from "@/components/layout/Navbar";
@@ -12,8 +14,8 @@ import {
   MapPin,
   Clock,
   Send,
-  Building2,
-  CheckCircle
+  CheckCircle,
+  Mail,
 } from "lucide-react";
 
 const contactInfo = [
@@ -24,8 +26,8 @@ const contactInfo = [
     link: "tel:360-303-9000",
   },
   {
-    icon: Globe,
-    title: "Website",
+    icon: Mail,
+    title: "Mail to",
     value: "investmentpropertytrust.com",
     link: "https://investmentpropertytrust.com",
   },
@@ -52,20 +54,60 @@ const Contact = () => {
     message: "",
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    toast({
-      title: "Message Received",
-      description: "Thank you for contacting us. We'll be in touch soon!",
-    });
-    setFormData({ name: "", email: "", phone: "", message: "" });
+  const [result, setResult] = useState("");
+
+  // Handle form changes
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setFormData((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData(prev => ({
-      ...prev,
-      [e.target.name]: e.target.value
-    }));
+  // Handle form submission using Web3Forms
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setResult("Sending...");
+
+    const data = new FormData();
+    data.append("access_key", "67e21209-2718-4816-ab5b-cf6a7b3c09af");
+    data.append("name", formData.name);
+    data.append("email", formData.email);
+    data.append("phone", formData.phone);
+    data.append("message", formData.message);
+
+    try {
+      const response = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        body: data,
+      });
+
+      const json = await response.json();
+
+      if (json.success) {
+        setResult("Form Submitted Successfully!");
+        toast({
+          title: "Message Received",
+          description: "Thank you for contacting us. We'll be in touch soon!",
+        });
+        setFormData({ name: "", email: "", phone: "", message: "" });
+      } else {
+        setResult("Error submitting form. Please try again.");
+        toast({
+          title: "Submission Failed",
+          description: "Something went wrong. Please try again later.",
+        });
+      }
+    } catch (err) {
+      console.error(err);
+      setResult("Error submitting form. Please try again.");
+      toast({
+        title: "Submission Failed",
+        description: "Something went wrong. Please try again later.",
+      });
+    }
   };
 
   return (
@@ -73,7 +115,7 @@ const Contact = () => {
       <Navbar />
 
       {/* Hero Section */}
-      <section className="pt-32 pb-20 bg-gradient-to-br from-blue-300  to-indigo-50 relative overflow-hidden">
+      <section className="pt-32 pb-20 bg-gradient-to-br from-blue-300 to-indigo-50 relative overflow-hidden">
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-20 right-10 w-72 h-72 bg-white rounded-full blur-3xl" />
         </div>
@@ -91,8 +133,8 @@ const Contact = () => {
               Get in Touch
             </h1>
             <p className="text-gray-900 text-lg md:text-xl leading-relaxed">
-              Have a question or ready to discuss your next real estate project?
-              Our team is here to help you every step of the way.
+              Have a question or ready to discuss your next real estate
+              project? Our team is here to help you every step of the way.
             </p>
           </motion.div>
         </div>
@@ -113,13 +155,17 @@ const Contact = () => {
                 Send Us a Message
               </h2>
               <p className="text-muted-foreground mb-8">
-                Fill out the form below and we'll get back to you within 24 hours.
+                Fill out the form below and we'll get back to you within 24
+                hours.
               </p>
 
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid sm:grid-cols-2 gap-6">
                   <div>
-                    <label htmlFor="name" className="block text-sm font-medium text-foreground mb-2">
+                    <label
+                      htmlFor="name"
+                      className="block text-sm font-medium text-foreground mb-2"
+                    >
                       Full Name
                     </label>
                     <Input
@@ -127,13 +173,15 @@ const Contact = () => {
                       name="name"
                       value={formData.name}
                       onChange={handleChange}
-                      placeholder="John Smith"
                       required
                       className="h-12"
                     />
                   </div>
                   <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-foreground mb-2">
+                    <label
+                      htmlFor="email"
+                      className="block text-sm font-medium text-foreground mb-2"
+                    >
                       Email Address
                     </label>
                     <Input
@@ -142,7 +190,6 @@ const Contact = () => {
                       type="email"
                       value={formData.email}
                       onChange={handleChange}
-                      placeholder="john@example.com"
                       required
                       className="h-12"
                     />
@@ -150,7 +197,10 @@ const Contact = () => {
                 </div>
 
                 <div>
-                  <label htmlFor="phone" className="block text-sm font-medium text-foreground mb-2">
+                  <label
+                    htmlFor="phone"
+                    className="block text-sm font-medium text-foreground mb-2"
+                  >
                     Phone Number
                   </label>
                   <Input
@@ -159,13 +209,15 @@ const Contact = () => {
                     type="tel"
                     value={formData.phone}
                     onChange={handleChange}
-                    placeholder="(360) 000-0000"
                     className="h-12"
                   />
                 </div>
 
                 <div>
-                  <label htmlFor="message" className="block text-sm font-medium text-foreground mb-2">
+                  <label
+                    htmlFor="message"
+                    className="block text-sm font-medium text-foreground mb-2"
+                  >
                     Your Message
                   </label>
                   <Textarea
@@ -184,6 +236,10 @@ const Contact = () => {
                   Send Message
                   <Send className="w-5 h-5 ml-2" />
                 </Button>
+
+                <span className="text-sm text-muted-foreground mt-2 block">
+                  {result}
+                </span>
               </form>
             </motion.div>
 
@@ -200,8 +256,8 @@ const Contact = () => {
                   Contact Information
                 </h2>
                 <p className="text-muted-foreground mb-8">
-                  Reach out to us directly or visit our office. We're always happy to discuss
-                  your real estate goals.
+                  Reach out to us directly or visit our office. We're always
+                  happy to discuss your real estate goals.
                 </p>
               </div>
 
@@ -219,12 +275,20 @@ const Contact = () => {
                     <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
                       <info.icon className="w-6 h-6 text-primary" />
                     </div>
-                    <h3 className="font-semibold text-foreground mb-1">{info.title}</h3>
+                    <h3 className="font-semibold text-foreground mb-1">
+                      {info.title}
+                    </h3>
                     {info.link ? (
                       <a
                         href={info.link}
-                        target={info.link.startsWith("http") ? "_blank" : undefined}
-                        rel={info.link.startsWith("http") ? "noopener noreferrer" : undefined}
+                        target={
+                          info.link.startsWith("http") ? "_blank" : undefined
+                        }
+                        rel={
+                          info.link.startsWith("http")
+                            ? "noopener noreferrer"
+                            : undefined
+                        }
                         className="text-muted-foreground hover:text-primary transition-colors"
                       >
                         {info.value}
@@ -235,35 +299,12 @@ const Contact = () => {
                   </motion.div>
                 ))}
               </div>
-
-
-
-
-              {/* Trust Badge */}
-              {/* <div className="bg-primary/5 border border-primary/10 rounded-xl p-6">
-                <div className="flex items-start space-x-4">
-                  <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center flex-shrink-0">
-                    <Building2 className="w-6 h-6 text-primary-foreground" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-foreground mb-2">
-                      40+ Years of Trust
-                    </h3>
-                    <p className="text-muted-foreground text-sm leading-relaxed">
-                      Investment Property Trust has been serving clients across the
-                      Pacific Northwest since 1984. Your success is our priority.
-                    </p>
-                  </div>
-                </div>
-              </div> */}
             </motion.div>
           </div>
         </div>
       </section>
 
-
-      {/* Map Placeholder */}
-
+      {/* Map Section */}
       <section className="p-16">
         <div className="bg-secondary rounded-2xl overflow-hidden h-96 relative">
           <iframe
@@ -273,10 +314,13 @@ const Contact = () => {
             loading="lazy"
             referrerPolicy="no-referrer-when-downgrade"
           />
+          <div className="absolute bottom-4 left-4 bg-white/90 backdrop-blur-md px-3 py-2 rounded shadow">
+            <p className="text-sm font-semibold text-slate-900">
+              2150 Meridian Blvd A, Minden, NV 89423, USA
+            </p>
+          </div>
         </div>
       </section>
-
-
 
       {/* Why Contact Us */}
       <section className="py-24 bg-secondary">
@@ -292,8 +336,9 @@ const Contact = () => {
               Why Work With Us
             </h2>
             <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              When you partner with Investment Property Trust, you get more than just
-              real estate services—you get a dedicated team committed to your success.
+              When you partner with Investment Property Trust, you get more than
+              just real estate services—you get a dedicated team committed to
+              your success.
             </p>
           </motion.div>
 
@@ -301,7 +346,8 @@ const Contact = () => {
             {[
               {
                 title: "Expert Guidance",
-                description: "40+ years of experience across all real estate sectors",
+                description:
+                  "40+ years of experience across all real estate sectors",
               },
               {
                 title: "In-House Team",
@@ -322,7 +368,9 @@ const Contact = () => {
               >
                 <CheckCircle className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
                 <div>
-                  <h3 className="font-semibold text-foreground mb-1">{item.title}</h3>
+                  <h3 className="font-semibold text-foreground mb-1">
+                    {item.title}
+                  </h3>
                   <p className="text-muted-foreground text-sm">{item.description}</p>
                 </div>
               </motion.div>

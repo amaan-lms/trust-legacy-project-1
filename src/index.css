@@ -8,14 +8,14 @@
 */
 
 /* When HERO is present AND navbar is transparent */
-body:has(#hero) header:not(.scrolled) nav a {
+/* body:has(#hero) header:not(.scrolled) nav a {
   color: white;
-}
+} */
 
 /* Hover effect on hero */
-body:has(#hero) header:not(.scrolled) nav a:hover {
-  color: #60a5fa; /* blue-400 */
-}
+/* body:has(#hero) header:not(.scrolled) nav a:hover {
+  color: #60a5fa; 
+} */
 
 
 @layer base {

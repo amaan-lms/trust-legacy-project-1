@@ -47,15 +47,15 @@ export const Navbar = () => {
   `}
       >
         <nav className="container mx-auto px-4 lg:px-8">
-          <div className="flex items-center justify-between h-20">
+          <div className="grid grid-cols-2 lg:grid-cols-3 items-center h-20">
 
             {/* Logo */}
             <Link to="/" className="flex items-center space-x-2">
-              <img
+              {/* <img
                 src={logo}
                 alt="Logo"
                 className="pt-4 mb-4 w-[16vw] max-w-[180px] sm:max-w-[220px] lg:max-w-[80px] h-auto object-contain mx-auto"
-              />
+              /> */}
 
               {/* 
               <span
@@ -68,12 +68,12 @@ export const Navbar = () => {
             </Link>
 
             {/* Desktop Links */}
-            <div className="hidden lg:flex items-center space-x-8">
+            <div className="hidden lg:flex items-center space-x-12">
               {navLinks.map((link) => (
                 <Link
                   key={link.path}
                   to={link.path}
-                  className={`relative text-sm font-medium transition-colors hover:text-blue-900 ${isScrolled ? "text-foreground" : "text-blue-600"
+                  className={`relative text-sm font-medium transition-colors hover:text-blue-900 ${isScrolled ? "text-foreground" : "text-blue-900"
                     } ${location.pathname === link.path ? "text-primary" : ""}`}
                 >
                   {link.name}
@@ -86,19 +86,21 @@ export const Navbar = () => {
                 </Link>
               ))}
 
-              <Button asChild className="ml-4">
+              {/* <Button asChild className="ml-4">
                 <Link to="/contact">Get in Touch</Link>
-              </Button>
+              </Button> */}
             </div>
 
             {/* Mobile Menu Button */}
-            <button
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className={`lg:hidden p-2 transition-colors ${isScrolled ? "text-foreground" : "text-white"
-                }`}
-            >
-              {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-            </button>
+            <div className="flex items-center justify-end">
+              <button
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                className={`lg:hidden p-2 transition-colors ${isScrolled ? "text-foreground" : "text-white"
+                  }`}
+              >
+                {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+              </button>
+            </div>
           </div>
         </nav>
       </motion.header>
@@ -121,7 +123,7 @@ export const Navbar = () => {
 
             {/* Slide-in Menu */}
             <motion.nav
-              className="absolute right-0 top-0 bottom-0 w-80 bg-background shadow-2xl"
+              className="absolute right-0 top-0 bottom-0 w-80 bg-background shadow-2xl "
               initial={{ x: "100%" }}
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
@@ -151,9 +153,9 @@ export const Navbar = () => {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.5 }}
                 >
-                  <Button asChild className="w-full mt-4">
+                  {/* <Button asChild className="w-full mt-4">
                     <Link to="/contact">Get in Touch</Link>
-                  </Button>
+                  </Button> */}
                 </motion.div>
               </div>
             </motion.nav>
